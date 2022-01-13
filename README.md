@@ -1,2 +1,5 @@
-# webform_likert_scale
-This module extends the likert elements and adds ability to add data properties that can be scaled and multiplied. 
+# Group by field widget
+
+## Inspiration
+1. [project/grouped_checkboxes](https://www.drupal.org/project/entity_reference_tree)
+2. [project/entity_reference_tree](https://www.drupal.org/project/entity_reference_tree)
