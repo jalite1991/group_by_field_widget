@@ -1,6 +1,6 @@
 {
-    "name": "jalite1991/webform_likert_scale",
-    "description": "This module extends the likert elements and adds ability to add data properties that can be scaled and multiplied.",
+    "name": "jalite1991/group_by_field_widget",
+    "description": "",
     "type": "drupal-module",
     "license": "GPL-2.0-or-later",
     "authors": [
@@ -16,7 +16,6 @@
         "source": "https://git.drupalcode.org/project/webform_likert_scale"
     },
     "require": {
-        "drupal/core": "^8.8 || ^9",
-        "drupal/webform": "^6.1"
+        "drupal/core": "^8.8 || ^9"
     }
 }
