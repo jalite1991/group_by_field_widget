@@ -164,13 +164,29 @@ class EntityReferenceGroupByFieldWidget extends OptionsWidgetBase
 
     if ($this->multiple) {
       // Get the ids of each of the selected options and build
-      foreach (array_keys(array_filter($input_values[$this->fieldDefinition->getName()])) as $value) {
+      foreach (array_keys(array_filter($this->flattenFormValues($input_values[$this->fieldDefinition->getName()]))) as $value) {
         $massaged_values[] = ['target_id' => $value];
       }
     } else {
       $massaged_values[] = ['target_id' => $input_values[$this->fieldDefinition->getName()]];
     }
+
     return $massaged_values;
+  }
+
+  protected function flattenFormValues($form_values )
+  {
+    $flattened_array = [];
+
+    foreach ($form_values as $key => $value) {
+      if (is_array($value)) {
+        $flattened_array += $this->flattenFormValues($value);
+      } else {
+        $flattened_array[$key] = $value;
+      }
+    }
+
+    return $flattened_array;
   }
 
   protected function getGroupOptions()
