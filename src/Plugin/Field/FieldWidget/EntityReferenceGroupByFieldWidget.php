@@ -144,9 +144,7 @@ class EntityReferenceGroupByFieldWidget extends OptionsWidgetBase
 
 
     foreach ($options as $options_key => $optionLabel) {
-
       $this->groupFormElements($element, $option_entitities[$options_key], $selected, $options_key, $optionLabel);
-
     }
 
     return $element;
@@ -313,7 +311,7 @@ class EntityReferenceGroupByFieldWidget extends OptionsWidgetBase
     // Put in array for eventual nested grouping
     $group_by_list = [$this->getSetting('group_by')];
 
-    if (empty($group_by_list[$depth] )) {
+    if ($depth == 0 && empty($group_by_list[$depth])) {
       $element['#description'] = "ALERT!! Missing 'Group by' selection on entity field widget";
     }
 
