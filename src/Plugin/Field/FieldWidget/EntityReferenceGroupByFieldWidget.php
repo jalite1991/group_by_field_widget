@@ -104,7 +104,7 @@ class EntityReferenceGroupByFieldWidget extends OptionsWidgetBase
     $elements['group_by'] = [
       '#type' => 'select',
       '#title' => $this
-        ->t('Select element'),
+        ->t('Group by'),
       '#options' => $this->getGroupOptions(),
       '#default_value' => $this->getSetting('group_by'),
     ];
@@ -144,9 +144,7 @@ class EntityReferenceGroupByFieldWidget extends OptionsWidgetBase
 
 
     foreach ($options as $options_key => $optionLabel) {
-
       $this->groupFormElements($element, $option_entitities[$options_key], $selected, $options_key, $optionLabel);
-
     }
 
     return $element;
@@ -310,10 +308,15 @@ class EntityReferenceGroupByFieldWidget extends OptionsWidgetBase
    */
   protected function groupFormElements(&$element, EntityInterface $entity, $selected, $options_key, $optionLabel, $depth = 0)
   {
+    // Put in array for eventual nested grouping
     $group_by_list = [$this->getSetting('group_by')];
 
-    if( count($group_by_list) != $depth) {
-      // Put in array for eventual nested grouping
+    if ($depth == 0 && empty($group_by_list[$depth])) {
+      $element['#description'] = "ALERT!! Missing 'Group by' selection on entity field widget";
+    }
+
+    if ( count($group_by_list) != $depth && !empty($group_by_list[$depth])) {
+
       $group_details = $this->parseGroupDetails(explode('.', $group_by_list[$depth]), $entity);
       $group_label = 'group_'.$group_details['key'];
 
@@ -367,13 +370,17 @@ class EntityReferenceGroupByFieldWidget extends OptionsWidgetBase
 
     if (count($field_chain) != $depth) {
       $field_list = $this->entityFieldManager->getFieldDefinitions($entity->getEntityTypeId(), $entity->bundle());
-      $value = $entity->get($field_chain[$depth])->getValue();
-      $settings =  $field_list[$field_chain[$depth]]->getSettings();
 
-      if (isset($value[0]['target_id'])) {
-        $entity = $this->entityTypeManager->getStorage($settings['target_type'])->load($value[0]['target_id']);
-        $details = $this->parseGroupDetails($field_chain, $entity ,++$depth);
+      if ( !empty( $field_chain[$depth] )) {
+        $value = $entity->get($field_chain[$depth])->getValue();
+        $settings =  $field_list[$field_chain[$depth]]->getSettings();
+
+        if (isset($value[0]['target_id'])) {
+          $entity = $this->entityTypeManager->getStorage($settings['target_type'])->load($value[0]['target_id']);
+          $details = $this->parseGroupDetails($field_chain, $entity ,++$depth);
+        }
       }
+
     } else {
       $details = [
         'key' => $entity->id(),
