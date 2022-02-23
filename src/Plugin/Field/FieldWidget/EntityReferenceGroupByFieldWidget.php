@@ -119,7 +119,7 @@ class EntityReferenceGroupByFieldWidget extends OptionsWidgetBase
   {
     $summary = [];
 
-    $summary[] = t('Group By: @list', ['@list' => $this->getSetting('group_by')]);
+    $summary[] = $this->t('Group By: @list', ['@list' => $this->getSetting('group_by')]);
 
     return $summary;
   }
@@ -174,6 +174,14 @@ class EntityReferenceGroupByFieldWidget extends OptionsWidgetBase
     return $massaged_values;
   }
 
+  /**
+   * Recursive array to flatten user input array.
+   *
+   * @param array $form_values
+   *   Nested list of field input.
+   * @return array
+   *   Flattend list of field inputs.
+   */
   protected function flattenFormValues($form_values )
   {
     $flattened_array = [];
@@ -189,6 +197,11 @@ class EntityReferenceGroupByFieldWidget extends OptionsWidgetBase
     return $flattened_array;
   }
 
+  /**
+   * Returns list of groupable field types.
+   *
+   * @return array
+   */
   protected function getGroupOptions()
   {
     $settings = $this->fieldDefinition->getSettings();
@@ -203,13 +216,27 @@ class EntityReferenceGroupByFieldWidget extends OptionsWidgetBase
     return $list;
   }
 
+  /**
+   * Recursive function to find all avaiable group types.
+   *
+   * @param string $entity_type
+   *   Machine name of entity type.
+   * @param string $bundle
+   *   Bundle name.
+   * @param array $field_list
+   *   List of all the groupable fields.
+   * @param array $field_path
+   *   The key and label for groupable fields
+   * @return array
+   *   List of groupable fields.
+   */
   protected function getFieldTree($entity_type, $bundle, &$field_list = [], $field_path = [])
   {
     $list = [];
 
     foreach ($this->entityFieldManager->getFieldDefinitions($entity_type, $bundle) as $key => $field_definitions) {
       $field_definition_name = $entity_type . "." . $key;
-      // If new field determine if groupable.
+      // If new field determine if groupable and store in $field_list.
       if (!in_array($field_definition_name, array_keys($field_list))) {
         $field_list[$field_definition_name] = $this->isGroupable($field_definitions);
       }
@@ -246,6 +273,12 @@ class EntityReferenceGroupByFieldWidget extends OptionsWidgetBase
     return $list;
   }
 
+  /**
+   * Determines if field is groupable.
+   *
+   * @param FieldDefinitionInterface $field
+   * @return boolean
+   */
   protected function isGroupable(FieldDefinitionInterface $field)
   {
     // Only fields with a single option is allowed
@@ -258,6 +291,23 @@ class EntityReferenceGroupByFieldWidget extends OptionsWidgetBase
     return true;
   }
 
+  /**
+   * Recursive function that modifies form inputs to grouped format.
+   *
+   * @param [type] $element
+   *   Render element.
+   * @param EntityInterface $entity
+   *   Loaded entity.
+   * @param [type] $selected
+   *   List of selected inputs.
+   * @param [type] $options_key
+   *   The key of current input being worked on.
+   * @param [type] $optionLabel
+   *   The label of current input being worked on.
+   * @param integer $depth
+   *   The depth of the recursive function.
+   * @return void
+   */
   protected function groupFormElements(&$element, EntityInterface $entity, $selected, $options_key, $optionLabel, $depth = 0)
   {
     $group_by_list = [$this->getSetting('group_by')];
@@ -296,6 +346,18 @@ class EntityReferenceGroupByFieldWidget extends OptionsWidgetBase
     }
   }
 
+  /**
+   * A recursive function that gets the group key and label.
+   *
+   * @param [type] $field_chain
+   *   Array of field nesting we need to group by.
+   * @param EntityInterface $entity
+   *   The Entity being parsed.
+   * @param integer $depth
+   *   The depth of the recursive function.
+   * @return array
+   *   The key and label of the groupable wrapper.
+   */
   protected function parseGroupDetails($field_chain, EntityInterface $entity, $depth = 0)
   {
     $details = [
