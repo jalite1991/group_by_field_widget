@@ -1,3 +1,0 @@
-field.widget.settings.entity_reference_group_by_field_widget:
-  type: mapping
-  label: 'Entity reference group by field widget'
