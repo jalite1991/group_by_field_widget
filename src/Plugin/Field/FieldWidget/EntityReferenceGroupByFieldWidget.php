@@ -480,6 +480,7 @@ class EntityReferenceGroupByFieldWidget extends OptionsWidgetBase
           $details = $this->parseGroupDetails($field_chain, $entity, ++$depth);
         }
       }
+
     } else {
       $details = [
         'key' => $entity->id(),
