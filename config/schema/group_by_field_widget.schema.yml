@@ -1,6 +1,6 @@
-field.widget.settings.entity_reference_group_by_field_widget:
+field.widget.settings.group_by_field_reference_widget:
   type: mapping
-  label: 'Entity reference group by field widget widget settings'
+  label: 'Group by field reference widget widget settings'
   mapping:
     bundle_options:
       type: textfield

@@ -15,20 +15,19 @@ use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\NestedArray;
 
 /**
- * Plugin implementation of the 'entity_reference_group_by_field_widget' widget.
+ * Plugin implementation of the 'group_by_field_reference_widget' widget.
  *
  * @FieldWidget(
- *   id = "entity_reference_group_by_field_widget",
+ *   id = "group_by_field_reference_widget",
  *   module = "group_by_field_widget",
- *   label = @Translation("Entity reference group by field widget"),
+ *   label = @Translation("Group by field reference widget"),
  *   field_types = {
- *     "entity_reference",
+ *     "entity_reference"
  *   },
  *   multiple_values = TRUE
  * )
  */
-class EntityReferenceGroupByFieldWidget extends OptionsWidgetBase
-{
+class GroupByFieldReferenceWidget extends OptionsWidgetBase {
 
   /**
    * Drupal\Core\Entity\EntityFieldManagerInterface definition.
