@@ -8,3 +8,6 @@ field.widget.settings.group_by_field_reference_widget:
     group_by:
       type: textfield
       label: 'Group by'
+    open_details:
+      type: boolean
+      label: 'Open details by default'
