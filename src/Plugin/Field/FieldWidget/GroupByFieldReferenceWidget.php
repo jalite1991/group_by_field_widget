@@ -27,7 +27,8 @@ use Drupal\Component\Utility\NestedArray;
  *   multiple_values = TRUE
  * )
  */
-class GroupByFieldReferenceWidget extends OptionsWidgetBase {
+class GroupByFieldReferenceWidget extends OptionsWidgetBase
+{
 
   /**
    * Drupal\Core\Entity\EntityFieldManagerInterface definition.
@@ -104,6 +105,7 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase {
     return [
       'bundle_options' => [],
       'group_by' => '',
+      'open_details' => '',
     ] + parent::defaultSettings();
   }
 
@@ -114,15 +116,55 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase {
   {
 
     $elements = [];
+    $options = $this->getGroupOptions($form_state);
+    $selected = $this->getSetting('group_by');
+    $maxGroupings = 3;
 
     // List of group by options.
     $elements['group_by'] = [
-      '#type' => 'select',
-      '#title' => $this
-        ->t('Group by'),
-      '#options' => $this->getGroupOptions($form_state),
-      '#default_value' => $this->getSetting('group_by'),
+      '#type' => 'container',
     ];
+
+    for ($i = 0; $i < $maxGroupings; $i++) {
+      $elements['group_by'][$i] = [
+        '#type' => 'select',
+        '#title' => $this
+          ->t('Group by'),
+        '#options' => $this->getGroupOptions($form_state),
+        '#default_value' => $selected[$i],
+      ];
+
+      if ($i != 0) {
+
+        $elements['group_by'][$i]['#description'] = $this->t('Nested field group optional.');
+        $elements['group_by'][$i]['#states'] = [
+          // Show this textfield if any radio except 'other' is selected.
+          'visible' => [
+            ':input[name="fields[field_signs][settings_edit_form][settings][group_by][' . ($i - 1) . ']"]' => ['!value' => null],
+          ],
+        ];
+      }
+
+      // Require field if younger sibling is selected.
+      $a = $i;
+      while ($a < $maxGroupings) {
+
+        $requiredState = [];
+        if ($a != $i) {
+          $requiredState[$a] = 'or';
+        } else {
+          $elements['group_by'][$i]['#states']['required'] = [];
+        }
+        $requiredState[':input[name="fields[field_signs][settings_edit_form][settings][group_by][' . ($a + 1) . ']"]'] = ['!value' => null];
+        $elements['group_by'][$i]['#states']['required'] += $requiredState;
+
+        if ($a !== 0) {
+          // $elements['group_by'][$i]['#states']['visible'] += $requiredState;
+        }
+
+        $a++;
+      }
+    }
 
     // If unsing views handler, have user slect options.
     if ($this->fieldDefinition->getSetting('handler') == "views") {
@@ -162,6 +204,14 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase {
       ];
     }
 
+    $elements['open_details'] = [
+      '#type' => 'checkbox',
+      '#title' => $this
+        ->t('Open details by default.'),
+      '#weight' => 10,
+      '#default_value' => $this->getSetting('open_details'),
+    ];
+
     return $elements;
   }
 
@@ -172,7 +222,7 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase {
   {
     $summary = [];
 
-    $summary[] = $this->t('Group By: @list', ['@list' => $this->getSetting('group_by')]);
+    $summary[] = $this->t('Group By: @list', ['@list' => is_array($this->getSetting('group_by')) ? join(", ", array_filter($this->getSetting('group_by'))) : $this->getSetting('group_by')]);
 
     return $summary;
   }
@@ -277,7 +327,7 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase {
   protected function getGroupOptions(FormStateInterface $form_state)
   {
     // Prepare response variable.
-    $list = [];
+    $list = ['Select field'];
 
     // Get entity type and bundle options.
     $settings = $this->fieldDefinition->getSettings();
@@ -404,7 +454,7 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase {
   protected function groupFormElements(&$element, ContentEntityInterface $entity, $selected, $options_key, $optionLabel, $depth = 0)
   {
     // Put in array for eventual nested grouping
-    $group_by_list = [$this->getSetting('group_by')];
+    $group_by_list = is_array($this->getSetting('group_by')) ? $this->getSetting('group_by') : [$this->getSetting('group_by')];
 
     if ($depth == 0 && empty($group_by_list[$depth])) {
       $element['#description'] = "ALERT!! Missing 'Group by' selection on entity field widget";
@@ -420,11 +470,11 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase {
         $element[$group_label] = array(
           '#type' => 'details',
           '#title' => $group_details['label'],
+          '#open' => $this->getSetting('open_details'),
         );
       }
 
       $this->groupFormElements($element[$group_label], $entity, $selected, $options_key, $optionLabel, ++$depth);
-
     } else {
 
       // Common settings between checkbox and radio buttons;
@@ -444,7 +494,6 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase {
           '#attributes' => in_array($options_key, $selected) ? ['checked' => "checked"] : [],
         );
       }
-
     }
   }
 
@@ -470,7 +519,7 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase {
     if (count($field_chain) != $depth) {
       $field_list = $this->entityFieldManager->getFieldDefinitions($entity->getEntityTypeId(), $entity->bundle());
 
-      if (!empty($field_chain[$depth]) && $entity->hasField($field_chain[$depth]) ) {
+      if (!empty($field_chain[$depth]) && $entity->hasField($field_chain[$depth])) {
         $value = $entity->get($field_chain[$depth])->getValue();
         $settings =  $field_list[$field_chain[$depth]]->getSettings();
 
@@ -479,7 +528,6 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase {
           $details = $this->parseGroupDetails($field_chain, $entity, ++$depth);
         }
       }
-
     } else {
       $details = [
         'key' => $entity->id(),
