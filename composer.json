@@ -1,5 +1,5 @@
 {
-    "name": "jalite1991/group_by_field_widget",
+    "name": "drupal/group_by_field_widget",
     "description": "",
     "type": "drupal-module",
     "license": "GPL-2.0-or-later",
@@ -10,10 +10,10 @@
             "role": "Maintainer"
         }
     ],
-    "homepage": "https://drupal.org/project/webform_likert_scale",
+    "homepage": "http://drupal.org/project/group_by_field_widget",
     "support": {
-        "issues": "https://drupal.org/project/issues/webform_likert_scale",
-        "source": "https://git.drupalcode.org/project/webform_likert_scale"
+        "issues": "https://www.drupal.org/project/issues/group_by_field_widget",
+        "source": "https://git.drupalcode.org/project/group_by_field_widget"
     },
     "require": {
         "drupal/core": "^8.8 || ^9"
