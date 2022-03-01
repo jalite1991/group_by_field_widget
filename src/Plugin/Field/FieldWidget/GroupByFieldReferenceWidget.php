@@ -267,7 +267,7 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase
     // Get user values
     $input_values = $form_state->getUserInput();
 
-    if ($this->multiple) {
+    if ($this->fieldDefinition->getFieldStorageDefinition()->getCardinality() !== 1) {
       // Get the ids of each of the selected options and build
       foreach (array_keys(array_filter($this->flattenFormValues($input_values[$this->fieldDefinition->getName()]))) as $value) {
         $massaged_values[] = ['target_id' => $value];
