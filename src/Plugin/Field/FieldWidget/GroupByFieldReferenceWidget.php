@@ -117,7 +117,7 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase
 
     $elements = [];
     $options = $this->getGroupOptions($form_state);
-    $selected = $this->getSetting('group_by');
+    $selected = is_array($this->getSetting('group_by'))?$this->getSetting('group_by'):[$this->getSetting('group_by')];
     $maxGroupings = 3;
 
     // List of group by options.
@@ -131,7 +131,7 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase
         '#title' => $this
           ->t('Group by'),
         '#options' => $this->getGroupOptions($form_state),
-        '#default_value' => $selected[$i],
+        '#default_value' => isset($selected[$i])?$selected[$i]:'',
       ];
 
       if ($i != 0) {
@@ -267,7 +267,7 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase
     // Get user values
     $input_values = $form_state->getUserInput();
 
-    if ($this->multiple) {
+    if ($this->fieldDefinition->getFieldStorageDefinition()->getCardinality() !== 1) {
       // Get the ids of each of the selected options and build
       foreach (array_keys(array_filter($this->flattenFormValues($input_values[$this->fieldDefinition->getName()]))) as $value) {
         $massaged_values[] = ['target_id' => $value];
