@@ -27,8 +27,7 @@ use Drupal\Component\Utility\NestedArray;
  *   multiple_values = TRUE
  * )
  */
-class GroupByFieldReferenceWidget extends OptionsWidgetBase
-{
+class GroupByFieldReferenceWidget extends OptionsWidgetBase {
 
   /**
    * Drupal\Core\Entity\EntityFieldManagerInterface definition.
@@ -283,7 +282,7 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase
    * Ajax return to reload form
    *
    * @param array $form
-   * @param FormStateInterface $form_state
+   * @param Drupal\Core\Form\FormStateInterface $form_state
    * @return void
    */
   public static function groupByAjaxCallback(array &$form, FormStateInterface $form_state)
@@ -419,7 +418,7 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase
   /**
    * Determines if field is groupable.
    *
-   * @param FieldDefinitionInterface $field
+   * @param Drupal\Core\Field\FieldDefinitionInterface $field
    * @return boolean
    */
   protected function isGroupable(FieldDefinitionInterface $field)
@@ -439,7 +438,7 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase
    *
    * @param [type] $element
    *   Render element.
-   * @param ContentEntityInterface $entity
+   * @param Drupal\Core\Entity\ContentEntityInterface $entity
    *   Loaded entity.
    * @param [type] $selected
    *   List of selected inputs.
@@ -502,7 +501,7 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase
    *
    * @param [type] $field_chain
    *   Array of field nesting we need to group by.
-   * @param ContentEntityInterface $entity
+   * @param Drupal\Core\Entity\ContentEntityInterface $entity
    *   The Entity being parsed.
    * @param integer $depth
    *   The depth of the recursive function.
@@ -537,4 +536,5 @@ class GroupByFieldReferenceWidget extends OptionsWidgetBase
 
     return $details;
   }
+
 }
