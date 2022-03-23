@@ -1,4 +1,4 @@
-# Group by Field Widget
+Group by Field Widget
 
 ## Overview
 Provides a widget for entity references and allows users to group options into collapsible details elements.
@@ -13,7 +13,6 @@ Say you need to create a field that lists all the displays you have across all u
 ## Inspiration
 1. [project/grouped_checkboxes](https://www.drupal.org/project/grouped_checkboxes)
 2. [project/entity_reference_tree](https://www.drupal.org/project/entity_reference_tree)
-
 
 
 Current maintainers:
