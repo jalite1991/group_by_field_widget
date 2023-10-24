@@ -14,6 +14,11 @@ Say you need to create a field that lists all the displays you have across all u
 1. [project/grouped_checkboxes](https://www.drupal.org/project/grouped_checkboxes)
 2. [project/entity_reference_tree](https://www.drupal.org/project/entity_reference_tree)
 
+## Reminders for the development team. 
+ - Run 
+    - `../../../../vendor/bin/phpcbf ./ --standard=Drupal,DrupalPractice` 
+    - `../../../../vendor/bin/phpcs ./ --standard=Drupal,DrupalPractice`
+
 
 
 Current maintainers:
