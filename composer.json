@@ -16,6 +16,6 @@
         "source": "https://git.drupalcode.org/project/group_by_field_widget"
     },
     "require": {
-        "drupal/core": "^8.8 || ^9"
+        "drupal/core": "^9 || ^10"
     }
 }
